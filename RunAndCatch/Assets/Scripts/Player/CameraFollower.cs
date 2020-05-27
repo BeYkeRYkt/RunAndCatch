@@ -36,7 +36,7 @@ public class CameraFollower : MonoBehaviour, IGameStateListener
     // Start is called before the first frame update
     void Awake()
     {
-        GameManager gm = FindObjectOfType<GameManager>();
+        ClientGameManager gm = ClientGameManager.Instance;
         gm.RegisterListener(this);
     }
 

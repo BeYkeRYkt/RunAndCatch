@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 
 /**
- * Main game logic 
+ * Main game logic for Client
  */
-public class GameManager : MonoBehaviour
+public class ClientGameManager : MonoBehaviour
 {
     // DEBUG ONLY
     public bool isOnline;
@@ -15,16 +15,14 @@ public class GameManager : MonoBehaviour
 
     public GameObject playerObject;
     public GameObject cameraObject;
-    //public GameObject canvasObject;
 
     private List<IGameStateListener> mListeners = new List<IGameStateListener>();
 
-    public static GameManager Instance { get; private set; }
+    public static ClientGameManager Instance { get; private set; }
 
     void Awake()
     {
         CreateSingleton();
-        //canvasObject = GameObject.Find("Canvas");
     }
 
     protected void CreateSingleton()
@@ -84,7 +82,9 @@ public class GameManager : MonoBehaviour
 
         isPaused = true;
 
-        //canvasObject.SetActive(true);
+        // Open pause menu
+        UIManager uiManager = UIManager.Instance;
+        uiManager.OpenGUI(PCPauseMenuScreen.ID);
 
         // call game state listeners
         foreach (IGameStateListener listener in mListeners)
@@ -97,7 +97,10 @@ public class GameManager : MonoBehaviour
     {
         isPaused = false;
 
-        //canvasObject.SetActive(false);
+        // Close pause menu
+        // TODO: Open gameplay UI
+        UIManager uiManager = UIManager.Instance;
+        uiManager.CloseGUI();
 
         // call game state listeners
         foreach (IGameStateListener listener in mListeners)
@@ -120,6 +123,10 @@ public class GameManager : MonoBehaviour
         if (isSessionRunning)
         {
             //UIHome.instance.ShowGameOver();
+            // TODO: Open gameover menu
+            UIManager uiManager = UIManager.Instance;
+            uiManager.OpenGUI(PCPauseMenuScreen.ID);
+            //uiManager.OpenGUI();
         }
     }
 
@@ -136,7 +143,7 @@ public class GameManager : MonoBehaviour
                 flwr.ResetPos();
             }
         }
-        PauseGame();
+        GameOver();
     }
 
     private void Update()

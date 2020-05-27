@@ -26,14 +26,14 @@ public class CharacterMovement : MonoBehaviour
     private Vector2 rotation = Vector2.zero;
 
     private EntityPlayer entityPlayer;
-    private GameManager gameManager;
+    private ClientGameManager gameManager;
 
     // Photon
     private PhotonView photonView;
 
     private void Start()
     {
-        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        gameManager = ClientGameManager.Instance;
         entityPlayer = GetComponent<EntityPlayer>();
         photonView = GetComponent<PhotonView>();
         rotation.y = transform.eulerAngles.y;

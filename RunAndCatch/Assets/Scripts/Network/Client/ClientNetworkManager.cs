@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 public class ClientNetworkManager : MonoBehaviourPunCallbacks
 {
-    private GameManager gameManager;
+    private ClientGameManager gameManager;
     private EntityManager entityManager;
     //public GameObject playerPrefab;
     public List<GameObject> playerPrefabs = new List<GameObject>();
@@ -18,7 +18,7 @@ public class ClientNetworkManager : MonoBehaviourPunCallbacks
     void Start()
     {
         // Get GameManager
-        gameManager = GetComponent<GameManager>();
+        gameManager = GetComponent<ClientGameManager>();
         entityManager = GetComponent<EntityManager>();
     }
 

@@ -1,4 +1,4 @@
-﻿using Photon.Pun;
+using Photon.Pun;
 using UnityEngine;
 
 public class NetworkEntityPlayer : NetworkNameableEntity
@@ -26,8 +26,7 @@ public class NetworkEntityPlayer : NetworkNameableEntity
         // tell game manager
         if (photonView.IsMine)
         {
-            GameObject managerObject = GameObject.Find("GameManager");
-            GameManager manager = managerObject.GetComponent<GameManager>();
+            ClientGameManager manager = ClientGameManager.Instance;
             manager.onPlayerDeath();
         }
     }
