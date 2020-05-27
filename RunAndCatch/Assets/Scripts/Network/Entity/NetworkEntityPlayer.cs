@@ -1,4 +1,4 @@
-using Photon.Pun;
+﻿using Photon.Pun;
 using UnityEngine;
 
 public class NetworkEntityPlayer : NetworkNameableEntity
@@ -21,13 +21,13 @@ public class NetworkEntityPlayer : NetworkNameableEntity
         base.OnPhotonSerializeView(stream, info);
     }
 
-    public void OnDeathEntity()
+    public void OnEntityDeath()
     {
         // tell game manager
         if (photonView.IsMine)
         {
             ClientGameManager manager = ClientGameManager.Instance;
-            manager.onPlayerDeath();
+            manager.OnPlayerDeath();
         }
     }
 }

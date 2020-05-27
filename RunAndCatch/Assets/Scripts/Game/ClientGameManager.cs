@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 /**
@@ -131,7 +131,7 @@ public class ClientGameManager : MonoBehaviour
     }
 
     // Player events
-    public void onPlayerDeath()
+    public void OnPlayerDeath()
     {
         isPlayerDead = true;
         if(cameraObject != null)

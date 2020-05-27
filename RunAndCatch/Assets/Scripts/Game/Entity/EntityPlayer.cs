@@ -24,7 +24,7 @@ public class EntityPlayer : NameableEntity
         NetworkEntityPlayer sync = GetComponent<NetworkEntityPlayer>();
         if(sync != null)
         {
-            sync.OnDeathEntity();
+            sync.OnEntityDeath();
         }
     }
 }
