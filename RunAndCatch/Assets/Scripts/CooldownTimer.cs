@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
+﻿
 public class CooldownTimer
 {
     public float TimeRemaining { get; private set; }

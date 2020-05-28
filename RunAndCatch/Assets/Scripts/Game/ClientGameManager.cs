@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Photon.Pun;
 using UnityEngine;
 
 /**
@@ -15,6 +16,8 @@ public class ClientGameManager : MonoBehaviour
 
     public GameObject playerObject;
     public GameObject cameraObject;
+
+    public List<GameObject> playerPrefabs = new List<GameObject>();
 
     private List<IGameStateListener> mListeners = new List<IGameStateListener>();
 
@@ -128,6 +131,56 @@ public class ClientGameManager : MonoBehaviour
             uiManager.OpenGUI(PCPauseMenuScreen.ID);
             //uiManager.OpenGUI();
         }
+    }
+
+    public void SpawnEntityPlayer()
+    {
+        int index = Random.Range(0, playerPrefabs.Count);
+        GameObject prefab = playerPrefabs[index];
+        SpawnEntityPlayer(prefab);
+    }
+
+    private void SpawnEntityPlayer(GameObject prefab)
+    {
+        // kill another player
+        if (playerObject != null)
+        {
+            EntityPlayer ep = playerObject.GetComponent<EntityPlayer>();
+            ep.KillEntity();
+        }
+
+        // spawn player
+        Vector3 pos = new Vector3(Random.Range(-5f, 5f), 0, Random.Range(-5f, 5f));
+        playerObject = PhotonNetwork.Instantiate(prefab.name, pos, Quaternion.identity);
+        //Log("Created new prefab for " + PhotonNetwork.NickName);
+
+        // set nickname
+        EntityPlayer player = playerObject.GetComponent<EntityPlayer>();
+        player.SetDisplayName(PhotonNetwork.NickName);
+
+        // set camera for prefab
+        CharacterMovement mvnt = playerObject.GetComponent<CharacterMovement>();
+        mvnt.cameraObject = cameraObject.transform.parent.gameObject;
+        cameraObject.transform.parent.parent = playerObject.transform;
+        cameraObject.transform.parent.transform.localPosition = new Vector3(0f, 5, -4);
+
+        // talk to camera follow game object
+        //CameraFollower flwr = gameManager.cameraObject.GetComponent<CameraFollower>();
+        //flwr.target = gameManager.playerObject;
+
+        // set hunter/victim role
+        string hunterName = GameRoomManager.Instance.HunterNickname;
+        if (player.GetDisplayName().Equals(hunterName))
+        {
+            player.SetPlayerRole(PlayerRole.HUNTER);
+        }
+        else
+        {
+            player.SetPlayerRole(PlayerRole.VICTIM);
+        }
+
+        // unpause game
+        UnpauseGame();
     }
 
     // Player events

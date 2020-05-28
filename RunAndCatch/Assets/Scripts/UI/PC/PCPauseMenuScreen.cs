@@ -8,6 +8,7 @@ public class PCPauseMenuScreen : UIScreen
 
     public Text pingText;
     public Text LogText;
+    public Text timeText;
 
     void Start()
     {
@@ -18,6 +19,7 @@ public class PCPauseMenuScreen : UIScreen
     void Update()
     {
         pingText.text = "Ping: " + PhotonNetwork.GetPing();
+        timeText.text = "Time: " + GameRoomManager.Instance.GetTimeCooldown();
     }
 
     public void DebugLog(string msg)
@@ -30,7 +32,7 @@ public class PCPauseMenuScreen : UIScreen
     public void OnSpawnButtonPressed()
     {
         Hide();
-        ClientNetworkManager manager = FindObjectOfType<ClientNetworkManager>();
+        ClientGameManager manager = ClientGameManager.Instance;
         manager.SpawnEntityPlayer();
     }
 

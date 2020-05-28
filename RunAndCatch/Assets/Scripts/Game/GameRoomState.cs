@@ -1,4 +1,4 @@
-
+﻿
 public enum GameRoomState
 {
     // Room is waiting

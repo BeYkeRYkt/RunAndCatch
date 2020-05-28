@@ -5684,6 +5684,7 @@ GameObject:
   - component: {fileID: 492045977}
   - component: {fileID: 492045978}
   - component: {fileID: 492045979}
+  - component: {fileID: 492045980}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -5710,6 +5711,12 @@ MonoBehaviour:
   isGameOver: 0
   playerObject: {fileID: 0}
   cameraObject: {fileID: 1298199140}
+  playerPrefabs:
+  - {fileID: 66745709903305839, guid: a57219e3fef3c734381c6fa7c61884a4, type: 3}
+  - {fileID: 66745709903305839, guid: aeb6098083b0a234b98bc29e7e865208, type: 3}
+  - {fileID: 66745709903305839, guid: 48d918b810f68c847910f172e864296c, type: 3}
+  - {fileID: 66745709903305839, guid: 07d195594b247b845bfd2e30bd993e08, type: 3}
+  - {fileID: 66745709903305839, guid: ccff946fb0603a94b8f2e218bf5cad44, type: 3}
 --- !u!4 &492045976
 Transform:
   m_ObjectHideFlags: 0
@@ -5736,12 +5743,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b59f1365ef9bd244b81e0c6328e0d2c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerPrefabs:
-  - {fileID: 66745709903305839, guid: a57219e3fef3c734381c6fa7c61884a4, type: 3}
-  - {fileID: 66745709903305839, guid: aeb6098083b0a234b98bc29e7e865208, type: 3}
-  - {fileID: 66745709903305839, guid: 48d918b810f68c847910f172e864296c, type: 3}
-  - {fileID: 66745709903305839, guid: 07d195594b247b845bfd2e30bd993e08, type: 3}
-  - {fileID: 66745709903305839, guid: ccff946fb0603a94b8f2e218bf5cad44, type: 3}
   LogText: {fileID: 0}
 --- !u!114 &492045978
 MonoBehaviour:
@@ -5769,10 +5770,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e47cb10bb5f47249b71f40418d09264, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  screenPrefs:
-  - {fileID: 3429729827006502651, guid: c7d424fed9d2e7944890d19a5c78be65, type: 3}
+  screenPrefs: []
   defaultScreenPref: {fileID: 3429729827006502651, guid: c7d424fed9d2e7944890d19a5c78be65,
     type: 3}
+--- !u!114 &492045980
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 492045974}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f737c0f3def6a884d86f7d1f3b3057b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MapName: 
+  HunterNickname: 
+  StartTime: 0
+  TimerEnable: 0
+  minPlayersForStart: 2
+  state: 0
+  cooldownTimeInSeconds: 30
 --- !u!1 &500271810
 GameObject:
   m_ObjectHideFlags: 0
