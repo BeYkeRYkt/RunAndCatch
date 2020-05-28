@@ -265,7 +265,10 @@ public class GameRoomManager : MonoBehaviourPunCallbacks, IOnEventCallback
         PhotonNetwork.RaiseEvent(EventConstant.EVENT_ID_ROOM_SET_HUNTER, HunterNickname, raiseEventOptions, sendOptions);
 
         // send timer data
-        PhotonNetwork.RaiseEvent(EventConstant.EVENT_ID_ROOM_TIMER_START, StartTime, raiseEventOptions, sendOptions);
+        if (TimerEnable)
+        {
+            PhotonNetwork.RaiseEvent(EventConstant.EVENT_ID_ROOM_TIMER_START, StartTime, raiseEventOptions, sendOptions);
+        }
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
