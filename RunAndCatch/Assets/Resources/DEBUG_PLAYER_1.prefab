@@ -112,6 +112,7 @@ MonoBehaviour:
   entityId: 0
   rigidBody: {fileID: 7372655481185017648}
   mNameLabel: {fileID: 4361135632048618308}
+  role: 0
 --- !u!114 &2425526178225090287
 MonoBehaviour:
   m_ObjectHideFlags: 0

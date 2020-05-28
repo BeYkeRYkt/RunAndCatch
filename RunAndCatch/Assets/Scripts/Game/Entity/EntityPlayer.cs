@@ -2,21 +2,19 @@
 
 public class EntityPlayer : NameableEntity
 {
-    private PlayerInfo info;
+    private PlayerInfo info = PlayerInfo.DEFAULT;
+    public PlayerRole playerRole = PlayerRole.VICTIM;
 
     public PlayerInfo Info { get => info; set => info = value; }
 
-    // Start is called before the first frame update
-    public override void Start()
+    public PlayerRole GetPlayerRole()
     {
-        base.Start();
-        Info = PlayerInfo.DEFAULT;
+        return playerRole;
     }
 
-    // Update is called once per frame
-    public override void Update()
+    public void SetPlayerRole(PlayerRole role)
     {
-        base.Update();
+        playerRole = role;
     }
 
     public override void OnEntityDeath()
