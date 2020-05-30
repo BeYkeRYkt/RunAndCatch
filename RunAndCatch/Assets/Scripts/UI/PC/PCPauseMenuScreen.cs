@@ -10,16 +10,16 @@ public class PCPauseMenuScreen : UIScreen
     public Text LogText;
     public Text timeText;
 
-    void Start()
-    {
-        mId = "ui_pc_pause_menu";
-    }
-
     // Update is called once per frame
     void Update()
     {
         pingText.text = "Ping: " + PhotonNetwork.GetPing();
         timeText.text = "Time: " + GameRoomManager.Instance.GetTimeCooldown();
+    }
+
+    public override void Initialize()
+    {
+        mId = ID;
     }
 
     public void DebugLog(string msg)
@@ -31,14 +31,16 @@ public class PCPauseMenuScreen : UIScreen
 
     public void OnSpawnButtonPressed()
     {
-        Hide();
+        UIManager uiManager = UIManager.Instance;
+        uiManager.CloseGUI();
         ClientGameManager manager = ClientGameManager.Instance;
         manager.SpawnEntityPlayer();
     }
 
     public void OnLeaveButtonPressed()
     {
-        Hide();
+        UIManager uiManager = UIManager.Instance;
+        uiManager.CloseGUI();
         ClientNetworkManager manager = FindObjectOfType<ClientNetworkManager>();
         manager.Leave();
     }

@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
-public class UIScreen : MonoBehaviour
+public abstract class UIScreen : MonoBehaviour
 {
     public string mId;
 
@@ -20,4 +21,6 @@ public class UIScreen : MonoBehaviour
         RectTransform rect = GetComponent<RectTransform>();
         rect.SetAsLastSibling();
     }
+
+    public abstract void Initialize();
 }

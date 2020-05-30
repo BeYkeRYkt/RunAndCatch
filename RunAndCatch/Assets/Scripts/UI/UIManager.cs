@@ -34,12 +34,14 @@ public class UIManager : MonoBehaviour
         foreach (UIScreen screenPref in screenPrefs)
         {
             UIScreen createdScreen = CreateScreen(screenPref);
+            createdScreen.Initialize();
             createdScreen.Hide();
             screensPool.Add(createdScreen);
         }
         if (defaultScreenPref != null)
         {
             UIScreen defScreen = CreateScreen(defaultScreenPref);
+            defScreen.Initialize();
             defScreen.Show();
             screensPool.Add(defScreen);
             currentScreen = defScreen;
