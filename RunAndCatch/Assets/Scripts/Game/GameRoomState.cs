@@ -11,5 +11,5 @@ public enum GameRoomState
     RUNNING = 2,
 
     // Room is end
-    ENDING = 2
+    ENDING = 3
 }
