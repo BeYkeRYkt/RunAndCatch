@@ -17,6 +17,9 @@ public class ClientGameManager : MonoBehaviour
     public GameObject playerObject;
     public GameObject cameraObject;
 
+    public PlayerRole playerRole;
+
+    public GameObject hunterPrefab;
     public List<GameObject> playerPrefabs = new List<GameObject>();
 
     private List<IGameStateListener> mListeners = new List<IGameStateListener>();
@@ -87,6 +90,7 @@ public class ClientGameManager : MonoBehaviour
 
         // Open pause menu
         UIManager uiManager = UIManager.Instance;
+        uiManager.CloseGUI();
         uiManager.OpenGUI(PCPauseMenuScreen.ID);
 
         // call game state listeners
@@ -101,9 +105,11 @@ public class ClientGameManager : MonoBehaviour
         isPaused = false;
 
         // Close pause menu
-        // TODO: Open gameplay UI
         UIManager uiManager = UIManager.Instance;
         uiManager.CloseGUI();
+
+        // TODO: Open gameplay mobile UI
+        uiManager.OpenGUI(PCGameplayScreen.ID);
 
         // call game state listeners
         foreach (IGameStateListener listener in mListeners)
@@ -135,9 +141,17 @@ public class ClientGameManager : MonoBehaviour
 
     public void SpawnEntityPlayer()
     {
-        int index = Random.Range(0, playerPrefabs.Count);
-        GameObject prefab = playerPrefabs[index];
-        SpawnEntityPlayer(prefab);
+        if (playerRole == PlayerRole.HUNTER)
+        {
+            SpawnEntityPlayer(hunterPrefab);
+            return;
+        }
+        else
+        {
+            int index = Random.Range(0, playerPrefabs.Count);
+            GameObject prefab = playerPrefabs[index];
+            SpawnEntityPlayer(prefab);
+        }
     }
 
     private void SpawnEntityPlayer(GameObject prefab)
@@ -173,14 +187,13 @@ public class ClientGameManager : MonoBehaviour
         if (player.GetDisplayName().Equals(hunterName))
         {
             player.SetPlayerRole(PlayerRole.HUNTER);
+            playerRole = PlayerRole.HUNTER;
         }
         else
         {
             player.SetPlayerRole(PlayerRole.VICTIM);
+            playerRole = PlayerRole.VICTIM;
         }
-
-        // unpause game
-        UnpauseGame();
     }
 
     // Player events

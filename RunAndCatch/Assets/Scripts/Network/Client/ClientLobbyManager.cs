@@ -1,4 +1,5 @@
 ﻿
+using ExitGames.Client.Photon;
 using Photon.Pun;
 using UnityEngine;
 using UnityEngine.UI;
@@ -38,6 +39,9 @@ public class ClientLobbyManager : MonoBehaviourPunCallbacks
     {
         if (isConnected)
         {
+            Hashtable table = new Hashtable();
+            table.Add("skin", "0");
+            PhotonNetwork.LocalPlayer.SetCustomProperties(table);
             PhotonNetwork.JoinRandomRoom();
         }
     }

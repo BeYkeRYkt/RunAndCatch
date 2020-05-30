@@ -22,8 +22,9 @@ public class GameRoomManager : MonoBehaviourPunCallbacks, IOnEventCallback
     public GameRoomState state = GameRoomState.WAITING;
 
     // Timer
-    private double timerDecrementValue;
-    public float cooldownTimeInSeconds = 20; // in secs
+    private int timerDecrementValue;
+    public int cooldownTimeInSeconds = 10; // in secs
+    public int roundTime = 60; // in secs
 
     private List<IGameRoomListener> mListeners = new List<IGameRoomListener>();
 
@@ -52,28 +53,55 @@ public class GameRoomManager : MonoBehaviourPunCallbacks, IOnEventCallback
         Instance = this;
     }
 
-    void Update()
+    void Start()
     {
-        // Update cooldown timer
-        if (TimerEnable)
+        if (PhotonNetwork.CurrentRoom != null && !PhotonNetwork.IsMasterClient)
         {
-            double timerIncrementValue = PhotonNetwork.Time - StartTime;
-            timerDecrementValue = cooldownTimeInSeconds - timerIncrementValue;
-
-            if (timerDecrementValue <= 0)
+            // sync with master client
+            bool flag = (bool)PhotonNetwork.CurrentRoom.CustomProperties["IsGameRunning"];
+            if (flag)
             {
-                //Timer Completed
-                OnTimerComplete();
+                state = GameRoomState.RUNNING;
             }
         }
+    }
 
-        if (state != GameRoomState.RUNNING)
+    void Update()
+    {
+        // Update timer
+        UpdateTimer();
+
+        // Update room state
+        if (state == GameRoomState.WAITING || state == GameRoomState.STARTING)
         {
             UpdateRoomState();
         }
     }
 
-    public void UpdateRoomState()
+    private void UpdateTimer()
+    {
+        if (TimerEnable)
+        {
+            int timerIncrementValue = (int)(PhotonNetwork.Time - StartTime);
+            if (IsGameStarting())
+            {
+                timerDecrementValue = cooldownTimeInSeconds - timerIncrementValue;
+            }
+            else if (IsGameRunning())
+            {
+                timerDecrementValue = roundTime - timerIncrementValue;
+            }
+
+            if (timerDecrementValue == 0)
+            {
+                TimerEnable = false;
+                OnTimerComplete();
+                Debug.Log("OnTimerComplete");
+            }
+        }
+    }
+
+    private void UpdateRoomState()
     {
         if (PhotonNetwork.CurrentRoom == null) return;
 
@@ -93,6 +121,9 @@ public class GameRoomManager : MonoBehaviourPunCallbacks, IOnEventCallback
 
                         // randomize
                         RandomizeHunter();
+
+                        // update properties
+                        UpdateServerProperties();
                     }
                 }
                 break;
@@ -109,10 +140,6 @@ public class GameRoomManager : MonoBehaviourPunCallbacks, IOnEventCallback
                         StopTimer();
                     }
                 }
-                if (TimerEnable)
-                {
-                    // TODO: update UI ?
-                }
                 break;
             case GameRoomState.RUNNING:
                 // TODO: update UI ?
@@ -120,38 +147,47 @@ public class GameRoomManager : MonoBehaviourPunCallbacks, IOnEventCallback
         }
     }
 
+    public void UpdateServerProperties()
+    {
+        Hashtable table = new Hashtable
+        {
+            { "MapName", MapName },
+            { "IsGameRunning", IsGameRunning() }
+        };
+        PhotonNetwork.CurrentRoom.SetCustomProperties(table);
+    }
+
     public int GetTimeCooldown()
     {
-        return (int) timerDecrementValue;
+        return timerDecrementValue;
     }
 
-    public void StartTimer()
+    private void StartTimer()
     {
-        if (!TimerEnable)
-        {
-            double startTime = PhotonNetwork.Time;
-            RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
-            SendOptions sendOptions = new SendOptions { Reliability = true };
-            PhotonNetwork.RaiseEvent(EventConstant.EVENT_ID_ROOM_TIMER_START, startTime, raiseEventOptions, sendOptions);
-        }
+        double startTime = PhotonNetwork.Time;
+        RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
+        SendOptions sendOptions = new SendOptions { Reliability = true };
+        PhotonNetwork.RaiseEvent(EventConstant.EVENT_ID_ROOM_SET_TIME, startTime, raiseEventOptions, sendOptions);
     }
 
-    public void StopTimer()
+    private void StopTimer()
     {
-        if (TimerEnable)
-        {
-            RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
-            SendOptions sendOptions = new SendOptions { Reliability = true };
-            PhotonNetwork.RaiseEvent(EventConstant.EVENT_ID_ROOM_TIMER_STOP, null, raiseEventOptions, sendOptions);
-        }
+        RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
+        SendOptions sendOptions = new SendOptions { Reliability = true };
+        PhotonNetwork.RaiseEvent(EventConstant.EVENT_ID_ROOM_RESET_TIME, null, raiseEventOptions, sendOptions);
     }
 
-    public void OnTimerComplete()
+    private void OnTimerComplete()
     {
-        if(state == GameRoomState.STARTING)
+        if (state == GameRoomState.STARTING)
         {
             // Start game
             StartGame();
+        }
+        else if (state == GameRoomState.RUNNING)
+        {
+            // end game
+            StopGame();
         }
     }
 
@@ -187,11 +223,23 @@ public class GameRoomManager : MonoBehaviourPunCallbacks, IOnEventCallback
 
         if (PhotonNetwork.IsMasterClient)
         {
+            // update properties
+            UpdateServerProperties();
+
             // stop timer
             StopTimer();
 
             // spawn player
             SpawnPlayer();
+
+            // send event to other players
+            double startTime = PhotonNetwork.Time;
+            RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
+            SendOptions sendOptions = new SendOptions { Reliability = true };
+            PhotonNetwork.RaiseEvent(EventConstant.EVENT_ID_ROOM_START_GAME, startTime, raiseEventOptions, sendOptions);
+
+            // Start round timer
+            StartTimer();
         }
 
         // call game room listeners
@@ -204,6 +252,13 @@ public class GameRoomManager : MonoBehaviourPunCallbacks, IOnEventCallback
     public void StopGame()
     {
         state = GameRoomState.ENDING;
+
+        if (PhotonNetwork.IsMasterClient) {
+            // send event to other players
+            RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
+            SendOptions sendOptions = new SendOptions { Reliability = true };
+            PhotonNetwork.RaiseEvent(EventConstant.EVENT_ID_ROOM_STOP_GAME, null, raiseEventOptions, sendOptions);
+        }
 
         // call game room listeners
         foreach (IGameRoomListener listener in mListeners)
@@ -253,6 +308,16 @@ public class GameRoomManager : MonoBehaviourPunCallbacks, IOnEventCallback
                 string mapName = (string)propertiesThatChanged["MapName"];
                 MapName = mapName;
             }
+
+            // is Running ?
+            if (propertiesThatChanged["IsGameRunning"] != null)
+            {
+                bool started = (bool)propertiesThatChanged["IsGameRunning"];
+                if (started)
+                {
+                    state = GameRoomState.RUNNING;
+                }
+            }
         }
     }
 
@@ -265,10 +330,7 @@ public class GameRoomManager : MonoBehaviourPunCallbacks, IOnEventCallback
         PhotonNetwork.RaiseEvent(EventConstant.EVENT_ID_ROOM_SET_HUNTER, HunterNickname, raiseEventOptions, sendOptions);
 
         // send timer data
-        if (TimerEnable)
-        {
-            PhotonNetwork.RaiseEvent(EventConstant.EVENT_ID_ROOM_TIMER_START, StartTime, raiseEventOptions, sendOptions);
-        }
+        PhotonNetwork.RaiseEvent(EventConstant.EVENT_ID_ROOM_SET_TIME, StartTime, raiseEventOptions, sendOptions);
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
@@ -282,7 +344,7 @@ public class GameRoomManager : MonoBehaviourPunCallbacks, IOnEventCallback
             SyncPlayerData(newPlayer);
         }
 
-        if(state == GameRoomState.STARTING)
+        if (state == GameRoomState.STARTING)
         {
             // randomize only for master client
             if (PhotonNetwork.IsMasterClient)
@@ -291,7 +353,7 @@ public class GameRoomManager : MonoBehaviourPunCallbacks, IOnEventCallback
                 RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
                 SendOptions sendOptions = new SendOptions { Reliability = true };
                 double startTime = PhotonNetwork.Time;
-                PhotonNetwork.RaiseEvent(EventConstant.EVENT_ID_ROOM_TIMER_RESTART, startTime, raiseEventOptions, sendOptions);
+                PhotonNetwork.RaiseEvent(EventConstant.EVENT_ID_ROOM_RESTART_TIME, startTime, raiseEventOptions, sendOptions);
 
                 // randomize again
                 RandomizeHunter();
@@ -303,7 +365,7 @@ public class GameRoomManager : MonoBehaviourPunCallbacks, IOnEventCallback
     {
         base.OnPlayerLeftRoom(otherPlayer);
 
-        if(state == GameRoomState.STARTING)
+        if (state == GameRoomState.STARTING)
         {
             if (PhotonNetwork.CurrentRoom.PlayerCount >= minPlayersForStart)
             {
@@ -323,35 +385,70 @@ public class GameRoomManager : MonoBehaviourPunCallbacks, IOnEventCallback
         byte eventCode = photonEvent.Code;
         if (eventCode == EventConstant.EVENT_ID_ROOM_SPAWN)
         {
+            Debug.Log("EVENT_ID_ROOM_SPAWN");
             // spawn player
             ClientGameManager clientGameManager = ClientGameManager.Instance;
             clientGameManager.SpawnEntityPlayer();
         }
-        else if (eventCode == EventConstant.EVENT_ID_ROOM_TIMER_START)
+        else if (eventCode == EventConstant.EVENT_ID_ROOM_SET_TIME)
         {
+            Debug.Log("EVENT_ID_ROOM_SET_TIME");
             // set timer
             double time = (double)photonEvent.CustomData;
             StartTime = time;
+            Debug.Log("Game Running: " + IsGameRunning());
+            timerDecrementValue = IsGameRunning() ? roundTime : cooldownTimeInSeconds;
             TimerEnable = true;
         }
-        else if (eventCode == EventConstant.EVENT_ID_ROOM_TIMER_STOP)
+        else if (eventCode == EventConstant.EVENT_ID_ROOM_RESET_TIME)
         {
+            Debug.Log("EVENT_ID_ROOM_RESET_TIME");
             // stop timer
             TimerEnable = false;
-            timerDecrementValue = cooldownTimeInSeconds;
+            timerDecrementValue = IsGameRunning() ? roundTime : cooldownTimeInSeconds;
         }
-        else if (eventCode == EventConstant.EVENT_ID_ROOM_TIMER_RESTART)
+        else if (eventCode == EventConstant.EVENT_ID_ROOM_RESTART_TIME)
         {
+            Debug.Log("EVENT_ID_ROOM_RESTART_TIME");
             // restart
             double time = (double)photonEvent.CustomData;
             StartTime = time;
-            timerDecrementValue = cooldownTimeInSeconds;
+            timerDecrementValue = IsGameRunning() ? roundTime : cooldownTimeInSeconds;
             TimerEnable = true;
         }
         else if (eventCode == EventConstant.EVENT_ID_ROOM_SET_HUNTER)
         {
+            Debug.Log("EVENT_ID_ROOM_SET_HUNTER");
             // set hunter
             HunterNickname = (string)photonEvent.CustomData;
+
+            // update player role
+            ClientGameManager clientGameManager = ClientGameManager.Instance;
+            PlayerRole role = PlayerRole.VICTIM;
+            if (PhotonNetwork.NickName.Equals(HunterNickname))
+            {
+                role = PlayerRole.HUNTER;
+            }
+            clientGameManager.playerRole = role;
+        }
+        else if (eventCode == EventConstant.EVENT_ID_ROOM_START_GAME)
+        {
+            Debug.Log("EVENT_ID_ROOM_START_GAME");
+            // set timer
+            double time = (double)photonEvent.CustomData;
+            StartTime = time;
+            timerDecrementValue = roundTime;
+            TimerEnable = true;
+            ClientGameManager gameManager = ClientGameManager.Instance;
+            gameManager.UnpauseGame();
+        }
+        else if (eventCode == EventConstant.EVENT_ID_ROOM_STOP_GAME)
+        {
+            Debug.Log("EVENT_ID_ROOM_STOP_GAME");
+            // stop timer
+            TimerEnable = false;
+            timerDecrementValue = 0;
+            PhotonNetwork.LeaveRoom();
         }
     }
 }

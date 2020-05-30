@@ -2,17 +2,23 @@
 public class EventConstant
 {
     // Spawn player
-    public readonly static byte EVENT_ID_ROOM_SPAWN = 1;
+    public readonly static byte EVENT_ID_ROOM_SPAWN = 11;
 
-    // Timer start
-    public readonly static byte EVENT_ID_ROOM_TIMER_START = 2;
+    // set time
+    public readonly static byte EVENT_ID_ROOM_SET_TIME = 12;
 
-    // Timer stop
-    public readonly static byte EVENT_ID_ROOM_TIMER_STOP = 3;
+    // reset time
+    public readonly static byte EVENT_ID_ROOM_RESET_TIME = 13;
 
-    // Timer restart
-    public readonly static byte EVENT_ID_ROOM_TIMER_RESTART = 4;
+    // restart timer
+    public readonly static byte EVENT_ID_ROOM_RESTART_TIME = 14;
 
     // Set hunter nickname
-    public readonly static byte EVENT_ID_ROOM_SET_HUNTER = 5;
+    public readonly static byte EVENT_ID_ROOM_SET_HUNTER = 15;
+
+    // Start game
+    public readonly static byte EVENT_ID_ROOM_START_GAME = 16;
+
+    // Stop game
+    public readonly static byte EVENT_ID_ROOM_STOP_GAME = 17;
 }
