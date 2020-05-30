@@ -22,6 +22,7 @@ public class NetworkObject : MonoBehaviourPun, IPunObservable
         {
             // Object is remote
             timeToReachGoal = currentPacketTime - lastPacketTime;
+            if (timeToReachGoal == 0.0) return;
             currentTime += Time.deltaTime;
 
             //Update Object position and Rigidbody parameters
