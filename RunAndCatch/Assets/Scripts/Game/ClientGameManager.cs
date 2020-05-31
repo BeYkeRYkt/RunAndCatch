@@ -174,13 +174,15 @@ public class ClientGameManager : MonoBehaviour
 
         // set camera for prefab
         CharacterMovement mvnt = playerObject.GetComponent<CharacterMovement>();
-        mvnt.cameraObject = cameraObject.transform.parent.gameObject;
-        cameraObject.transform.parent.parent = playerObject.transform;
-        cameraObject.transform.parent.transform.localPosition = new Vector3(0f, 5, -4);
+        mvnt.cameraObject = cameraObject.gameObject;
+        //cameraObject.transform.parent = playerObject.transform;
+        //cameraObject.transform.parent.transform.localPosition = new Vector3(0f, 5, -4);
+        //cameraObject.transform.localPosition = new Vector3(-1.71722f, 12.51777f, 1.094146f);
+        //cameraObject.transform.Rotate(54.866f, 114.615f, 0.003f);
 
         // talk to camera follow game object
-        //CameraFollower flwr = gameManager.cameraObject.GetComponent<CameraFollower>();
-        //flwr.target = gameManager.playerObject;
+        CameraFollower flwr = cameraObject.GetComponent<CameraFollower>();
+        flwr.target = playerObject;
 
         // set hunter/victim role
         string hunterName = GameRoomManager.Instance.HunterNickname;
@@ -202,8 +204,8 @@ public class ClientGameManager : MonoBehaviour
         isPlayerDead = true;
         if(cameraObject != null)
         {
-            cameraObject.transform.parent.parent = null;
-            CameraFollower flwr = cameraObject.transform.parent.GetComponent<CameraFollower>();
+            //cameraObject.transform.parent = null;
+            CameraFollower flwr = cameraObject.transform.GetComponent<CameraFollower>();
             if (flwr != null)
             {
                 flwr.ResetPos();

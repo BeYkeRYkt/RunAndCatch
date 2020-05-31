@@ -241,12 +241,6 @@ public class GameRoomManager : MonoBehaviourPunCallbacks, IOnEventCallback
             // Start round timer
             StartTimer();
         }
-
-        // call game room listeners
-        foreach (IGameRoomListener listener in mListeners)
-        {
-            listener.OnGameRoomStarted();
-        }
     }
 
     public void StopGame()
@@ -258,12 +252,6 @@ public class GameRoomManager : MonoBehaviourPunCallbacks, IOnEventCallback
             RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
             SendOptions sendOptions = new SendOptions { Reliability = true };
             PhotonNetwork.RaiseEvent(EventConstant.EVENT_ID_ROOM_STOP_GAME, null, raiseEventOptions, sendOptions);
-        }
-
-        // call game room listeners
-        foreach (IGameRoomListener listener in mListeners)
-        {
-            listener.OnGameRoomStarted();
         }
     }
 
@@ -377,6 +365,14 @@ public class GameRoomManager : MonoBehaviourPunCallbacks, IOnEventCallback
                 }
             }
         }
+        else if (state == GameRoomState.RUNNING)
+        {
+            // Stop game if left player is hunter or playerCount <= 1
+            if (otherPlayer.NickName.Equals(HunterNickname) || PhotonNetwork.CurrentRoom.PlayerCount <= 1)
+            {
+                StopGame();
+            }
+        }
     }
 
     // Receiver data
@@ -439,6 +435,13 @@ public class GameRoomManager : MonoBehaviourPunCallbacks, IOnEventCallback
             StartTime = time;
             timerDecrementValue = roundTime;
             TimerEnable = true;
+
+            // call game room listeners
+            foreach (IGameRoomListener listener in mListeners)
+            {
+                listener.OnGameRoomStarted();
+            }
+
             ClientGameManager gameManager = ClientGameManager.Instance;
             gameManager.UnpauseGame();
         }
@@ -448,6 +451,13 @@ public class GameRoomManager : MonoBehaviourPunCallbacks, IOnEventCallback
             // stop timer
             TimerEnable = false;
             timerDecrementValue = 0;
+
+            // call game room listeners
+            foreach (IGameRoomListener listener in mListeners)
+            {
+                listener.OnGameRoomStarted();
+            }
+
             PhotonNetwork.LeaveRoom();
         }
     }

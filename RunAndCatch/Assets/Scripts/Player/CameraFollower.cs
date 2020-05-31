@@ -6,6 +6,7 @@ public class CameraFollower : MonoBehaviour, IGameStateListener
     public GameObject defaultPos; 
     public GameObject target;
     public Vector3 target_Offset;
+    public Vector3 target_RotateOffset;
 
     public void OnGameOver()
     {
@@ -45,7 +46,9 @@ public class CameraFollower : MonoBehaviour, IGameStateListener
     {
         if (target)
         {
-            transform.position = Vector3.Lerp(transform.position, target.transform.position + target_Offset, 0.1f);
+            //transform.position = Vector3.Lerp(transform.position, target.transform.position + target_Offset, 0.1f);
+            transform.position = target.transform.position + target_Offset;
+            transform.rotation = Quaternion.Euler(target_RotateOffset.x, target_RotateOffset.y, target_RotateOffset.z);
         }
     }
 

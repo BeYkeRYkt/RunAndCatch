@@ -54,7 +54,7 @@ MonoBehaviour:
   groundSpeed: 12
   airSpeed: 6
   jumpSpeed: 8
-  mouse_enable: 1
+  mouse_enable: 0
   lookSpeed: 2
   lookXLimit: 60
   cameraObject: {fileID: 0}

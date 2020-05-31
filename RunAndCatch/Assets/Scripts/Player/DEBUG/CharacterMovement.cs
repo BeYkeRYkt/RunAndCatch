@@ -69,8 +69,6 @@ public class CharacterMovement : MonoBehaviour
         //Feed moveDirection with input.
         moveDirection = cameraForward * moveZ + cameraRight * moveX;
 
-        transform.LookAt(transform.position + moveDirection);
-
         //Multiply it by speed.
         if (moveX != 0 || moveZ != 0)
         {
@@ -89,6 +87,8 @@ public class CharacterMovement : MonoBehaviour
             currentSpeed = 0.0f;
             moveDirection = Vector3.zero;
         }
+
+        transform.LookAt(transform.position + moveDirection);
 
         Vector3 calcVector = moveDirection.normalized * currentSpeed;
 
