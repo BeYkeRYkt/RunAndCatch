@@ -18,11 +18,11 @@ public class ClientNetworkManager : MonoBehaviourPunCallbacks
     
     private void Log(string msg)
     {
-        string debugId = PCPauseMenuScreen.ID;
+        string debugId = MobilePauseMenuScreen.ID;
         UIScreen screen = UIManager.Instance.GetScreenById(debugId);
         if (screen != null)
         {
-            PCPauseMenuScreen pauseScreen = (PCPauseMenuScreen) screen;
+            MobilePauseMenuScreen pauseScreen = (MobilePauseMenuScreen) screen;
             pauseScreen.DebugLog(msg);
         }
     }

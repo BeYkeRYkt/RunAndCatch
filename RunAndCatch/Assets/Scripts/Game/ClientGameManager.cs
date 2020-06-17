@@ -24,6 +24,10 @@ public class ClientGameManager : MonoBehaviour
 
     private List<IGameStateListener> mListeners = new List<IGameStateListener>();
 
+    // spawn points for players
+    public List<GameObject> hunterSpawnPoints = new List<GameObject>();
+    public List<GameObject> victimsSpawnPoints = new List<GameObject>();
+
     public static ClientGameManager Instance { get; private set; }
 
     void Awake()
@@ -34,11 +38,6 @@ public class ClientGameManager : MonoBehaviour
     protected void CreateSingleton()
     {
         Instance = this;
-    }
-
-    void Start()
-    {
-        StartGame();
     }
 
     public void RegisterListener(IGameStateListener listener)
@@ -81,7 +80,7 @@ public class ClientGameManager : MonoBehaviour
 
     public void PauseGame()
     {
-        if (!isSessionRunning)
+        if (isPlayerDead)
         {
             return;
         }
@@ -91,7 +90,7 @@ public class ClientGameManager : MonoBehaviour
         // Open pause menu
         UIManager uiManager = UIManager.Instance;
         uiManager.CloseGUI();
-        uiManager.OpenGUI(PCPauseMenuScreen.ID);
+        uiManager.OpenGUI(MobilePauseMenuScreen.ID);
 
         // call game state listeners
         foreach (IGameStateListener listener in mListeners)
@@ -107,9 +106,7 @@ public class ClientGameManager : MonoBehaviour
         // Close pause menu
         UIManager uiManager = UIManager.Instance;
         uiManager.CloseGUI();
-
-        // TODO: Open gameplay mobile UI
-        uiManager.OpenGUI(PCGameplayScreen.ID);
+        uiManager.OpenGUI(MobileGameplayScreen.ID);
 
         // call game state listeners
         foreach (IGameStateListener listener in mListeners)
@@ -134,7 +131,7 @@ public class ClientGameManager : MonoBehaviour
             //UIHome.instance.ShowGameOver();
             // TODO: Open gameover menu
             UIManager uiManager = UIManager.Instance;
-            uiManager.OpenGUI(PCPauseMenuScreen.ID);
+            uiManager.OpenGUI(MobilePauseMenuScreen.ID);
             //uiManager.OpenGUI();
         }
     }
@@ -164,7 +161,24 @@ public class ClientGameManager : MonoBehaviour
         }
 
         // spawn player
+        // take random spawnpoint
+        GameObject spawnPoint = null;
+        if (playerRole == PlayerRole.HUNTER)
+        {
+            int randomId = Random.Range(0, hunterSpawnPoints.Capacity);
+            spawnPoint = hunterSpawnPoints[randomId];
+        } else
+        {
+            int randomId = Random.Range(0, victimsSpawnPoints.Capacity);
+            spawnPoint = victimsSpawnPoints[randomId];
+        }
+
         Vector3 pos = new Vector3(Random.Range(-5f, 5f), 0, Random.Range(-5f, 5f));
+        if (spawnPoint != null)
+        {
+            pos = spawnPoint.transform.position;
+        }
+
         playerObject = PhotonNetwork.Instantiate(prefab.name, pos, Quaternion.identity);
         //Log("Created new prefab for " + PhotonNetwork.NickName);
 
@@ -196,6 +210,10 @@ public class ClientGameManager : MonoBehaviour
             player.SetPlayerRole(PlayerRole.VICTIM);
             playerRole = PlayerRole.VICTIM;
         }
+
+        // unset player dead or game over
+        isPlayerDead = false;
+        isGameOver = false;
     }
 
     // Player events
@@ -230,4 +248,12 @@ public class ClientGameManager : MonoBehaviour
         }
     }
 
+    private void OnApplicationQuit()
+    {
+        if (PhotonNetwork.InRoom)
+        {
+            PhotonNetwork.LeaveRoom();
+            PhotonNetwork.SendAllOutgoingCommands();
+        }
+    }
 }

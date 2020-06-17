@@ -151,7 +151,7 @@ public class GameRoomManager : MonoBehaviourPunCallbacks, IOnEventCallback
     {
         Hashtable table = new Hashtable
         {
-            { "MapName", MapName },
+            { "Level", MapName },
             { "IsGameRunning", IsGameRunning() }
         };
         PhotonNetwork.CurrentRoom.SetCustomProperties(table);
@@ -291,9 +291,9 @@ public class GameRoomManager : MonoBehaviourPunCallbacks, IOnEventCallback
         if (propertiesThatChanged != null)
         {
             // set map name
-            if (propertiesThatChanged["MapName"] != null)
+            if (propertiesThatChanged["Level"] != null)
             {
-                string mapName = (string)propertiesThatChanged["MapName"];
+                string mapName = (string)propertiesThatChanged["Level"];
                 MapName = mapName;
             }
 
@@ -443,6 +443,7 @@ public class GameRoomManager : MonoBehaviourPunCallbacks, IOnEventCallback
             }
 
             ClientGameManager gameManager = ClientGameManager.Instance;
+            gameManager.StartGame();
             gameManager.UnpauseGame();
         }
         else if (eventCode == EventConstant.EVENT_ID_ROOM_STOP_GAME)
@@ -458,6 +459,10 @@ public class GameRoomManager : MonoBehaviourPunCallbacks, IOnEventCallback
                 listener.OnGameRoomStarted();
             }
 
+            ClientGameManager gameManager = ClientGameManager.Instance;
+            gameManager.StopGame();
+
+            // todo: timer leaving
             PhotonNetwork.LeaveRoom();
         }
     }

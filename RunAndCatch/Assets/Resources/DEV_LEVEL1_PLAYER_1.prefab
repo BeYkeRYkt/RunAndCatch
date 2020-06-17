@@ -58,6 +58,7 @@ MonoBehaviour:
   lookSpeed: 2
   lookXLimit: 60
   cameraObject: {fileID: 0}
+  variableJoystick: {fileID: 0}
 --- !u!54 &7372655481185017648
 Rigidbody:
   m_ObjectHideFlags: 0

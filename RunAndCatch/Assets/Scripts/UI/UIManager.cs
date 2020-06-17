@@ -9,7 +9,7 @@ public class UIManager : MonoBehaviour
     public UIScreen[] screenPrefs;
 
     // The standard screen that opens first
-    public UIScreen defaultScreenPref;
+    public int defaultScreenPrefId = -1;
 
     // Loaded screens
     protected List<UIScreen> screensPool;
@@ -38,12 +38,18 @@ public class UIManager : MonoBehaviour
             createdScreen.Hide();
             screensPool.Add(createdScreen);
         }
-        if (defaultScreenPref != null)
+        //if (defaultScreenPref != null)
+        //{
+        //    UIScreen defScreen = CreateScreen(defaultScreenPref);
+        //    defScreen.Initialize();
+        //    defScreen.Show();
+        //    screensPool.Add(defScreen);
+        //    currentScreen = defScreen;
+        //}
+        if (defaultScreenPrefId > -1)
         {
-            UIScreen defScreen = CreateScreen(defaultScreenPref);
-            defScreen.Initialize();
+            UIScreen defScreen = screensPool[defaultScreenPrefId];
             defScreen.Show();
-            screensPool.Add(defScreen);
             currentScreen = defScreen;
         }
     }

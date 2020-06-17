@@ -21,7 +21,8 @@ public class CharacterMovement : MonoBehaviour
     public float lookXLimit = 60.0f;
 
     public GameObject cameraObject;
-    
+    public VariableJoystick variableJoystick;
+
     private Vector3 moveDirection = Vector3.zero;
     private Vector2 rotation = Vector2.zero;
 
@@ -37,6 +38,11 @@ public class CharacterMovement : MonoBehaviour
         entityPlayer = GetComponent<EntityPlayer>();
         photonView = GetComponent<PhotonView>();
         rotation.y = transform.eulerAngles.y;
+
+        // set joystick
+        UIManager manager = UIManager.Instance;
+        MobileGameplayScreen screen = (MobileGameplayScreen) manager.GetScreenById(MobileGameplayScreen.ID);
+        variableJoystick = screen.joystick;
     }
 
     private void Update()
@@ -55,14 +61,18 @@ public class CharacterMovement : MonoBehaviour
 
     public void FixedUpdate()
     {
+        if (variableJoystick == null) return;
+
         // handle movement
         if (!photonView.IsMine) return;
 
         Vector3 cameraRight = cameraObject.transform.right;
         Vector3 cameraForward = cameraObject.transform.forward;
 
-        float moveX = gameManager.isPaused ? 0 : Input.GetAxis("Horizontal");
-        float moveZ = gameManager.isPaused ? 0 : Input.GetAxis("Vertical");
+        //float moveX = gameManager.isPaused ? 0 : Input.GetAxis("Horizontal");
+        //float moveZ = gameManager.isPaused ? 0 : Input.GetAxis("Vertical");
+        float moveX = gameManager.isPaused ? 0 : variableJoystick.Horizontal;
+        float moveZ = gameManager.isPaused ? 0 : variableJoystick.Vertical;
 
         Vector3 inputVector = new Vector3(moveX, 0, moveZ);
 
