@@ -19,10 +19,25 @@ public class EntityPlayer : NameableEntity
 
     public override void OnEntityDeath()
     {
+        base.OnEntityDeath();
         NetworkEntityPlayer sync = GetComponent<NetworkEntityPlayer>();
         if(sync != null)
         {
             sync.OnEntityDeath();
+        }
+    }
+
+    public void OnTriggerEnter(Collider other)
+    {
+        if(playerRole == PlayerRole.HUNTER)
+        {
+            Debug.Log(other.gameObject.name + " : " + other.tag);
+
+            if (other.tag == "Player")
+            {
+                EntityPlayer player = other.gameObject.GetComponent<EntityPlayer>();
+                player.KillEntity();
+            }
         }
     }
 }

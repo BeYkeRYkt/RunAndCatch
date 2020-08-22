@@ -1,6 +1,9 @@
 ﻿
 public enum GameRoomState
 {
+    // Room is null
+    DISCONNECTED = -1,
+
     // Room is waiting
     WAITING = 0,
 

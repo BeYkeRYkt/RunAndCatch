@@ -125,20 +125,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be453733dbbd5464694d13b709ee532e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncPosition: 1
-  syncRotation: 1
-  _realPosition: {x: 0, y: 0, z: 0}
-  _positionAtLastPacket: {x: 0, y: 0, z: 0}
-  _realRotation: {x: 0, y: 0, z: 0, w: 0}
-  currentTime: 0
-  currentPacketTime: 0
-  lastPacketTime: 0
-  timeToReachGoal: 0
+  mode: 1
   _entity: {fileID: 7452304602785331455}
-  syncVelocity: 1
-  syncAngularVelocity: 1
-  _realVelocity: {x: 0, y: 0, z: 0}
-  _realAngularVelocity: {x: 0, y: 0, z: 0}
 --- !u!136 &8369837588261362844
 CapsuleCollider:
   m_ObjectHideFlags: 0

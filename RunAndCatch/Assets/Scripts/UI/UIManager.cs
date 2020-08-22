@@ -30,6 +30,11 @@ public class UIManager : MonoBehaviour
 
     protected virtual void Initialize()
     {
+        // TODO: Switch language depend settings
+        string preferLang = LanguageManager.Instance.currentLanguage;
+        //LanguageManager manager = LanguageManager.Instance;
+        //manager.SelectLanguage(preferLang);
+
         screensPool = new List<UIScreen>();
         foreach (UIScreen screenPref in screenPrefs)
         {
@@ -38,20 +43,14 @@ public class UIManager : MonoBehaviour
             createdScreen.Hide();
             screensPool.Add(createdScreen);
         }
-        //if (defaultScreenPref != null)
-        //{
-        //    UIScreen defScreen = CreateScreen(defaultScreenPref);
-        //    defScreen.Initialize();
-        //    defScreen.Show();
-        //    screensPool.Add(defScreen);
-        //    currentScreen = defScreen;
-        //}
+
         if (defaultScreenPrefId > -1)
         {
             UIScreen defScreen = screensPool[defaultScreenPrefId];
             defScreen.Show();
             currentScreen = defScreen;
         }
+
     }
 
     protected UIScreen CreateScreen(UIScreen pref)
@@ -66,12 +65,13 @@ public class UIManager : MonoBehaviour
             if (screen.mId == id)
                 return screen;
         }
-        throw new System.Exception("There is no screen id: " + id);
+        throw new System.Exception("There is no screen id: " + id + ", size: " + screensPool.Capacity);
     }
 
     public void OpenGUI(string id)
     {
-        if(currentScreen != null)
+        Debug.Log("OpenGUI");
+        if (currentScreen != null)
         {
             currentScreen.Hide();
         }
@@ -91,6 +91,7 @@ public class UIManager : MonoBehaviour
 
     public void CloseGUI()
     {
+        Debug.Log("CloseGUI");
         if (currentScreen != null)
         {
             currentScreen.Hide();

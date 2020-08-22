@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<strings>
+	<string name="app_name">Some Game</string>
+
+	<!-- Connecting screen -->
+	<string name="ui_connecting_screen_connecting_process_text">Connecting to servers...</string>
+	<string name="ui_connecting_screen_servers_is_not_available_text">Servers is not available</string>
+	<string name="ui_connecting_screen_restart_connecting_text">Connection attempt through...</string>
+
+	<!-- Main menu screen -->
+	<string name="ui_ping_text">Ping</string>
+	<string name="ui_main_menu_nickname_text">Your nickname</string>
+	<string name="ui_main_menu_customize_text">Customize</string>
+	<string name="ui_main_menu_start_game_text">Start game</string>
+	<string name="ui_main_menu_settings_text">Settings</string>
+
+	<!-- Play menu screen -->
+	<string name="ui_play_menu_player_list_text">Player list</string>
+	<string name="ui_play_menu_empty_slot_text">Empty slot</string>
+	<string name="ui_play_menu_player_searching_text">Player search</string>
+	<string name="ui_play_menu_player_waiting_text">Waiting for players</string>
+	<string name="ui_play_menu_button_search_text">Search game</string>
+	<string name="ui_play_menu_button_stop_search_text">Stop searching</string>
+	<string name="ui_play_menu_button_leave_text">Leave the game</string>
+
+	<!-- Pause menu screen -->
+	<string name="ui_pause_menu_pause_text">Pause</string>
+	<string name="ui_pause_menu_continue_text">Continue</string>
+	<string name="ui_pause_menu_disconnect_text">Disconnect</string>
+
+	<!-- Gameplayer screen -->
+	<string name="ui_gameplay_hunter_text">You are a hunter! Catch the rest of the players!</string>
+	<string name="ui_gameplay_victim_text">You are the victim! Keep as long as possible from the hunter!</string>
+
+	<!-- Game over screen -->
+	<string name="ui_game_over_menu_game_over_text">Game Over</string>
+	<string name="ui_game_over_menu_reason_catched_text">You have been caught</string>
+	<string name="ui_game_over_menu_reason_few_players_text">The number of remaining players is less than the required</string>
+	<string name="ui_game_over_menu_reason_hunter_leaved_text">Hunter left the game</string>
+	<string name="ui_game_over_menu_reason_hunter_win_text">The hunter won!</string>
+	<string name="ui_game_over_menu_reason_victims_win_text">The survivors won!</string>
+	<string name="ui_game_over_menu_you_win_text">You won!</string>
+	<string name="ui_game_over_menu_leave_text">Leave the game</string>
+</strings>

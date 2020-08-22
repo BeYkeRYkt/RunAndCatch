@@ -1,4 +1,4 @@
-﻿using Photon.Pun;
+﻿
 using UnityEngine;
 
 public class NetworkEntityPlayer : NetworkNameableEntity
@@ -12,22 +12,20 @@ public class NetworkEntityPlayer : NetworkNameableEntity
         } else
         {
             Rigidbody body = GetComponent<Rigidbody>();
-            body.isKinematic = true;
+            //body.isKinematic = true;
         }
-    }
-
-    public override void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        base.OnPhotonSerializeView(stream, info);
     }
 
     public void OnEntityDeath()
     {
         // tell game manager
+        GameManager manager = GameManager.Instance;
         if (photonView.IsMine)
         {
-            ClientGameManager manager = ClientGameManager.Instance;
-            manager.OnPlayerDeath();
+            manager.OnLocalPlayerDeath();
+        } else
+        {
+            manager.OnRemotePlayerDeath();
         }
     }
 }

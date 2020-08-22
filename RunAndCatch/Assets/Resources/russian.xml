@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<strings>
+	<string name="app_name">Соме гаме</string>
+
+	<!-- Connecting screen -->
+	<string name="ui_connecting_screen_connecting_process_text">Идет подключение к серверам...</string>
+	<string name="ui_connecting_screen_servers_is_not_available_text">Сервера недоступны</string>
+	<string name="ui_connecting_screen_restart_connecting_text">Попытка подключения через...</string>
+
+	<!-- Main menu screen -->
+	<string name="ui_ping_text">Пинг</string>
+	<string name="ui_main_menu_nickname_text">Ваш никнейм</string>
+	<string name="ui_main_menu_customize_text">Кастомизация</string>
+	<string name="ui_main_menu_start_game_text">Начать игру</string>
+	<string name="ui_main_menu_settings_text">Настройки</string>
+
+	<!-- Play menu screen -->
+	<string name="ui_play_menu_player_list_text">Список игроков</string>
+	<string name="ui_play_menu_empty_slot_text">Пустой слот</string>
+	<string name="ui_play_menu_player_searching_text">Поиск игроков</string>
+	<string name="ui_play_menu_player_waiting_text">Ожидание игроков</string>
+	<string name="ui_play_menu_button_search_text">Найти игру</string>
+	<string name="ui_play_menu_button_stop_search_text">Остановить поиск</string>
+	<string name="ui_play_menu_button_leave_text">Покинуть игру</string>
+
+	<!-- Pause menu screen -->
+	<string name="ui_pause_menu_pause_text">Пауза</string>
+	<string name="ui_pause_menu_continue_text">Продолжить</string>
+	<string name="ui_pause_menu_disconnect_text">Отключиться</string>
+
+	<!-- Gameplayer screen -->
+	<string name="ui_gameplay_hunter_text">Вы охотник! Поймайте остальных игроков!</string>
+	<string name="ui_gameplay_victim_text">Вы жертва! Держитесь как можно дольше от охотника!</string>
+
+	<!-- Game over screen -->
+	<string name="ui_game_over_menu_game_over_text">Игра окончена</string>
+	<string name="ui_game_over_menu_reason_catched_text">Вы были пойманы игроком</string>
+	<string name="ui_game_over_menu_reason_few_players_text">Количество оставшихся игроков меньше требуемого</string>
+	<string name="ui_game_over_menu_reason_hunter_leaved_text">Охотник покинул игру</string>
+	<string name="ui_game_over_menu_reason_hunter_win_text">Охотник победил!</string>
+	<string name="ui_game_over_menu_reason_victims_win_text">Выжившие победили!</string>
+	<string name="ui_game_over_menu_you_win_text">Вы выиграли!</string>
+	<string name="ui_game_over_menu_leave_text">Покинуть игру</string>
+</strings>

@@ -3,25 +3,27 @@ using UnityEngine;
 
 public class NetworkNameableEntity : NetworkLivingEntity
 {
-    public override void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    private NameableEntity GetEntity()
     {
-        base.OnPhotonSerializeView(stream, info);
-
         //cast to the actual type we need
         NameableEntity _nEntity = _entity as NameableEntity;
         if (_nEntity == null)
         {
             Debug.LogError("Entity is not a NameableEntity!");
-            return;
+            return null;
         }
+        return _nEntity;
+    }
 
-        if (stream.IsWriting)
-        {
-            stream.SendNext(_nEntity.GetDisplayName());
-        }
-        else
-        {
-            _nEntity.SetDisplayName((string)stream.ReceiveNext());
-        }
+    public override void OnWritePacket(PhotonStream stream, PhotonMessageInfo info)
+    {
+        base.OnWritePacket(stream, info);
+        stream.SendNext(GetEntity().GetDisplayName());
+    }
+
+    public override void OnReadPacket(PhotonStream stream, PhotonMessageInfo info)
+    {
+        base.OnReadPacket(stream, info);
+        GetEntity().SetDisplayName((string)stream.ReceiveNext());
     }
 }

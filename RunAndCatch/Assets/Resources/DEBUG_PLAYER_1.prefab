@@ -15,7 +15,6 @@ GameObject:
   - component: {fileID: 7452304602785331455}
   - component: {fileID: 2425526178225090287}
   - component: {fileID: 7615623171648545288}
-  - component: {fileID: 3445972816177001173}
   m_Layer: 9
   m_Name: DEBUG_PLAYER_1
   m_TagString: Untagged
@@ -60,6 +59,7 @@ MonoBehaviour:
   lookXLimit: 60
   cameraObject: {fileID: 0}
   variableJoystick: {fileID: 0}
+  animator: {fileID: 0}
 --- !u!54 &7372655481185017648
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -126,20 +126,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be453733dbbd5464694d13b709ee532e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncPosition: 1
-  syncRotation: 1
-  _realPosition: {x: 0, y: 0, z: 0}
-  _positionAtLastPacket: {x: 0, y: 0, z: 0}
-  _realRotation: {x: 0, y: 0, z: 0, w: 0}
-  currentTime: 0
-  currentPacketTime: 0
-  lastPacketTime: 0
-  timeToReachGoal: 0
+  mode: 1
   _entity: {fileID: 7452304602785331455}
-  syncVelocity: 1
-  syncAngularVelocity: 1
-  _realVelocity: {x: 0, y: 0, z: 0}
-  _realAngularVelocity: {x: 0, y: 0, z: 0}
 --- !u!136 &7615623171648545288
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -150,20 +138,6 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.5
-  m_Height: 2.330117
-  m_Direction: 1
-  m_Center: {x: 0, y: 1.15, z: 0}
---- !u!136 &3445972816177001173
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 66745709903305839}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 0
   m_Radius: 0.5
   m_Height: 2.330117
   m_Direction: 1
@@ -339,11 +313,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: black_cop_vox
-      objectReference: {fileID: 0}
-    - target: {fileID: 5300943157995818901, guid: c22de1ab1d50a7a48a88f2f0410d4dc8,
-        type: 3}
-      propertyPath: m_Layer
-      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 5343421643668324785, guid: c22de1ab1d50a7a48a88f2f0410d4dc8,
         type: 3}

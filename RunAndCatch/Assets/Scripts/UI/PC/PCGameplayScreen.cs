@@ -11,7 +11,7 @@ public class PCGameplayScreen : UIScreen
 
     void Start()
     {
-        ClientGameManager manager = ClientGameManager.Instance;
+        GameManager manager = GameManager.Instance;
         if (manager.playerRole == PlayerRole.VICTIM)
         {
             messageBox.text = "You are the victim! Keep as long as possible from the hunter!";
@@ -44,7 +44,7 @@ public class PCGameplayScreen : UIScreen
     public void OnPauseButtonPress()
     {
         //Hide();
-        ClientGameManager manager = ClientGameManager.Instance;
+        GameManager manager = GameManager.Instance;
         manager.PauseGame();
     }
 }

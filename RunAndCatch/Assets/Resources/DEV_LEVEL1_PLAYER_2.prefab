@@ -15,9 +15,10 @@ GameObject:
   - component: {fileID: 7452304602785331455}
   - component: {fileID: 2425526178225090287}
   - component: {fileID: 7615623171648545288}
+  - component: {fileID: 5682902296772570678}
   m_Layer: 9
   m_Name: DEV_LEVEL1_PLAYER_2
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -59,6 +60,7 @@ MonoBehaviour:
   lookXLimit: 60
   cameraObject: {fileID: 0}
   variableJoystick: {fileID: 0}
+  animator: {fileID: 0}
 --- !u!54 &7372655481185017648
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -125,20 +127,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be453733dbbd5464694d13b709ee532e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncPosition: 1
-  syncRotation: 1
-  _realPosition: {x: 0, y: 0, z: 0}
-  _positionAtLastPacket: {x: 0, y: 0, z: 0}
-  _realRotation: {x: 0, y: 0, z: 0, w: 0}
-  currentTime: 0
-  currentPacketTime: 0
-  lastPacketTime: 0
-  timeToReachGoal: 0
+  mode: 1
   _entity: {fileID: 7452304602785331455}
-  syncVelocity: 1
-  syncAngularVelocity: 1
-  _realVelocity: {x: 0, y: 0, z: 0}
-  _realAngularVelocity: {x: 0, y: 0, z: 0}
 --- !u!136 &7615623171648545288
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -149,10 +139,24 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 1
-  m_Height: 4.074336
+  m_Radius: 0.8
+  m_Height: 4
   m_Direction: 1
-  m_Center: {x: 0, y: 2.0221095, z: 0}
+  m_Center: {x: 0, y: 2, z: 0.5}
+--- !u!136 &5682902296772570678
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 66745709903305839}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  m_Radius: 1
+  m_Height: 4
+  m_Direction: 1
+  m_Center: {x: 0, y: 2, z: 0.5}
 --- !u!1 &66745710254027108
 GameObject:
   m_ObjectHideFlags: 0
@@ -162,7 +166,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 66745710254027109}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: PlayerSkin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -193,7 +197,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5565261942541939002}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Nickname
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -226,7 +230,7 @@ GameObject:
   - component: {fileID: 571128068264491863}
   - component: {fileID: 753571218428842187}
   - component: {fileID: 4361135632048618308}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}

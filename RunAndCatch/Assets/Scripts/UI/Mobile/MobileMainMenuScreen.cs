@@ -1,134 +1,93 @@
 ﻿using Photon.Pun;
-using UnityEngine.UI;
 using UnityEngine;
-using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class MobileMainMenuScreen : UIScreen
 {
     public static string ID = "ui_mobile_main_menu";
 
+    // ping text
     public Text pingText;
-    public Text LogText;
 
-    public Text reconnectText;
-    private CooldownTimer cooldownTimer;
-    public float cooldownTimeInSeconds = 5; // in secs
+    // language depend labels
+    public Text nicknameLabel;
+    public Text customizeLabel;
+    public Text startLabel;
+    public Text settingsLabel;
 
-    private bool buttonsEnabled;
-    private ClientLobbyManager lobbyManager;
-
-    // buttons
-    public List<Button> btns = new List<Button>();
+    // nickname field
+    public InputField nicknameField;
 
     // Update is called once per frame
     void Update()
     {
-        // update timer
-        cooldownTimer.Update(Time.deltaTime);
+        // Check if Back was pressed this frame
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
 
+            // Quit the application
+            Application.Quit();
+        }
+
+        UpdateUI();
+    }
+
+    private void UpdateUI()
+    {
         // update ping text
-        pingText.text = "Ping: " + PhotonNetwork.GetPing();
-
-        // check master server
-        if (lobbyManager.IsConnected())
+        if (ClientLobbyManager.Instance.IsConnected())
         {
-            // enable buttons
-            if (!buttonsEnabled)
-            {
-                EnableButtons();
-            }
+            pingText.text = LanguageManager.Instance.langReader.getString("ui_ping_text") + ": " + PhotonNetwork.GetPing() + " ms";
         }
-        else if(lobbyManager.IsConnected() || lobbyManager.IsConnecting())
-        {
-            // hide reconnect text
-            if (reconnectText.gameObject.activeSelf)
-            {
-                reconnectText.gameObject.SetActive(false);
-            }
-        }
-        else if (!lobbyManager.IsConnected() && !lobbyManager.IsConnecting())
-        {
-            if (buttonsEnabled)
-            {
-                DisableButtons();
-            }
+    }
 
-            // try reconnect
-            if (!cooldownTimer.IsActive)
-            {
-                reconnectText.gameObject.SetActive(true);
-                reconnectText.text = "Try reconnect to Photon servers: " + cooldownTimeInSeconds + "s";
-                cooldownTimer.Start();
-            }
-
-            // update reconnect message
-            reconnectText.text = "Try reconnect to Photon servers: " + (int)cooldownTimer.TimeRemaining + "s";
-        }
+    public override void OnShowScreen()
+    {
+        base.OnShowScreen();
+        UpdateUI();
     }
 
     public override void Initialize()
     {
         mId = ID;
 
-        if (lobbyManager == null)
+        // set random nickname
+        string nickname = PlayerPrefs.GetString("nickname");
+        if(nickname == null || nickname.Equals(""))
         {
-            lobbyManager = ClientLobbyManager.Instance;
+            nickname = "default" + Random.Range(0, 100);
         }
 
-        cooldownTimer = new CooldownTimer(cooldownTimeInSeconds);
-        cooldownTimer.TimerCompleteEvent += OnTimerComplete;
+        PhotonNetwork.NickName = nickname;
+        nicknameField.text = PhotonNetwork.NickName;
 
-        // disable by default
-        reconnectText.gameObject.SetActive(false);
-
-        // disable buttons by default
-        DisableButtons();
+        nicknameLabel.text = LanguageManager.Instance.langReader.getString("ui_main_menu_nickname_text") + ":";
+        customizeLabel.text = LanguageManager.Instance.langReader.getString("ui_main_menu_customize_text").ToUpper();
+        startLabel.text = LanguageManager.Instance.langReader.getString("ui_main_menu_start_game_text").ToUpper();
+        settingsLabel.text = LanguageManager.Instance.langReader.getString("ui_main_menu_settings_text").ToUpper();
     }
 
-    void OnTimerComplete()
-    {
-        reconnectText.gameObject.SetActive(false);
-        lobbyManager.ConnectToPhotonServer();
-    }
-
-    public void DisableButtons()
-    {
-        for(int i = 0; i < btns.Capacity; i++)
-        {
-            Button btn = btns[i];
-            btn.interactable = false;
-        }
-        buttonsEnabled = false;
-    }
-
-    public void EnableButtons()
-    {
-        for (int i = 0; i < btns.Capacity; i++)
-        {
-            Button btn = btns[i];
-            btn.interactable = true;
-        }
-        buttonsEnabled = true;
-    }
-
-    public void DebugLog(string msg)
-    {
-        Debug.Log(msg);
-        LogText.text += "\n";
-        LogText.text += msg;
-    }
-
-    public void OnCreateRoomButtonPressed()
+    public void OnCustomizeButtonPress()
     {
         UIManager uiManager = UIManager.Instance;
-        //uiManager.CloseGUI();
-        lobbyManager.CreateRoom();
     }
 
-    public void OnJoinRoomButtonPressed()
+    public void OnPlayButtonPress()
     {
         UIManager uiManager = UIManager.Instance;
-        //uiManager.CloseGUI();
-        lobbyManager.JoinRoom();
+        uiManager.CloseGUI();
+        uiManager.OpenGUI(MobilePlayMenuScreen.ID);
+    }
+
+    public void OnSettingsButtonPress()
+    {
+        UIManager uiManager = UIManager.Instance;
+    }
+
+    public void OnNicknameValueChangedEnd()
+    {
+        // update nickname
+        PhotonNetwork.NickName = nicknameField.text;
+        PlayerPrefs.SetString("nickname", PhotonNetwork.NickName);
     }
 }

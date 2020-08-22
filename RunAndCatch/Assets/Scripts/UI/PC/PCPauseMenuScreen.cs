@@ -14,7 +14,7 @@ public class PCPauseMenuScreen : UIScreen
     void Update()
     {
         pingText.text = "Ping: " + PhotonNetwork.GetPing();
-        timeText.text = "Time: " + GameRoomManager.Instance.GetTimeCooldown();
+        timeText.text = "Time: " + RoomManager.Instance.GetTimeCooldown();
     }
 
     public override void Initialize()
@@ -33,7 +33,7 @@ public class PCPauseMenuScreen : UIScreen
     {
         UIManager uiManager = UIManager.Instance;
         uiManager.CloseGUI();
-        ClientGameManager manager = ClientGameManager.Instance;
+        GameManager manager = GameManager.Instance;
         manager.SpawnEntityPlayer();
     }
 

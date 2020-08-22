@@ -65,26 +65,13 @@ public class PhysicalEntity : Entity
         SetVelocity(newVector);
     }
 
-    // Override
-    /*
-    public override void SetPosition(Vector3 position)
+    public void MoveEntity(Vector3 direction)
     {
-        rigidBody.position = position;
+        rigidBody.MovePosition(direction);
     }
 
-    public override Vector3 GetPosition()
+    public void RotateEntity(Quaternion direction)
     {
-        return rigidBody.position;
+        rigidBody.MoveRotation(direction.normalized);
     }
-
-    public override void SetRotation(Quaternion rotation)
-    {
-        rigidBody.rotation = rotation.normalized;
-    }
-
-    public override Quaternion GetRotation()
-    {
-        return rigidBody.rotation;
-    }
-    */
 }

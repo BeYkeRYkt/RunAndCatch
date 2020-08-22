@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 8092890048663683979}
   - component: {fileID: 2356630558213275342}
   - component: {fileID: 3758010025578530785}
-  - component: {fileID: 2285769333501715886}
   m_Layer: 0
   m_Name: 5_god_bless_vox
   m_TagString: Untagged
@@ -95,19 +94,3 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 1911263984256199678, guid: 5aced73de4639ee4c8d3b1fbf75d5836, type: 2}
---- !u!54 &2285769333501715886
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6561982735102249583}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0

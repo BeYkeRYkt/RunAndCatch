@@ -7,17 +7,22 @@ public class EntityManager : MonoBehaviour
     public List<Entity> entities = new List<Entity>();
     public List<EntityPlayer> playerEntities = new List<EntityPlayer>();
 
-    // Start is called before the first frame update
-    void Start()
+    public static EntityManager Instance { get; private set; }
+
+
+    void Awake()
     {
-        
+        CreateSingleton();
     }
 
-    // Update is called once per frame
-    void Update()
+    protected void CreateSingleton()
     {
-        
+        if (Instance == null)
+        {
+            Instance = this;
+        }
     }
+
 
     public void AddEntity(Entity entity)
     {
@@ -73,7 +78,7 @@ public class EntityManager : MonoBehaviour
         return target;
     }
 
-    public List<EntityPlayer> getPlayerEntities()
+    public List<EntityPlayer> GetPlayerEntities()
     {
         return playerEntities;
     }

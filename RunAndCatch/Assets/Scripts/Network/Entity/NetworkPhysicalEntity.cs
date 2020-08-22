@@ -3,74 +3,75 @@ using UnityEngine;
 
 public class NetworkPhysicalEntity : NetworkEntity
 {
-    // settings
-    public bool syncVelocity = false;
-    public bool syncAngularVelocity = false;
+    private float m_Fraction;
 
-    public Vector3 _realVelocity;
-    public Vector3 _realAngularVelocity;
-
-    public override void Update()
+    private PhysicalEntity GetEntity()
     {
-        base.Update();
-
-        if (!photonView.IsMine)
+        //cast to the actual type we need
+        PhysicalEntity _pEntity = _entity as PhysicalEntity;
+        if (_pEntity == null)
         {
-            //cast to the actual type we need
-            PhysicalEntity _pEntity = _entity as PhysicalEntity;
-            if (_pEntity == null)
-            {
-                Debug.LogError("Entity is not a PhysicalEntity!");
-                return;
-            }
-
-            if (syncVelocity)
-            {
-                _pEntity.SetVelocity(_realVelocity);
-            }
-            if (syncAngularVelocity)
-            {
-                _pEntity.SetAngularVelocity(_realAngularVelocity);
-            }
+            Debug.LogError("Entity is not a PhysicalEntity!");
+            return null;
         }
+        return _pEntity;
     }
 
-    // Photon
-    public override void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    // override default behavior
+    public override void ApplyInterpolation(double interpolationTime)
     {
-        base.OnPhotonSerializeView(stream, info);
+        //float distance = Vector3.Distance(targetTempTransform.Position, transform.position);
+        //Vector3 lerpPos = Vector3.Lerp(transform.position, targetTempTransform.Position, (float) (distance * interpolationTime));
+        //GetEntity().transform.position = lerpPos;
 
-        if (stream.IsWriting)
-        {
-            //cast to the actual type we need
-            PhysicalEntity _pEntity = _entity as PhysicalEntity;
-            if (_pEntity == null)
-            {
-                Debug.LogError("Entity is not a PhysicalEntity!");
-                return;
-            }
+        GetEntity().MoveEntity(targetTempTransform.Position);
+        //transform.position = targetTempTransform.Position;
+        GetEntity().RotateEntity(targetTempTransform.Rotation);
+    }
 
-            if (syncVelocity)
-            {
-                stream.SendNext(_pEntity.GetVelocity());
-            }
+    public override void ApplyExtrapolation(double interpolationTime)
+    {
+        //Vector3 velocity = targetTempTransform.Velocity;
+        //Vector3 velocity = GetEntity().GetVelocity();
+        Vector3 velocity = targetTempTransform.Position - m_bufferedStates[1].Position;
 
-            if (syncAngularVelocity)
-            {
-                stream.SendNext(_pEntity.GetAngularVelocity());
-            }
-        }
-        else
-        {
-            if (syncVelocity)
-            {
-                _realVelocity = (Vector3)stream.ReceiveNext();
-            }
+        float lag = (float)(PhotonNetwork.Time - targetTempTransform.Timestamp);
+        Vector3 networkPosition = targetTempTransform.Position;
+        networkPosition += (velocity * lag);
 
-            if (syncAngularVelocity)
-            {
-                _realAngularVelocity = (Vector3)stream.ReceiveNext();
-            }
-        }
+        float t = (lag * 10);
+        m_Fraction = m_Fraction + Time.deltaTime * t;
+        Vector3 lerpPos = Vector3.Lerp(transform.position, networkPosition, m_Fraction);
+        GetEntity().transform.position = lerpPos;
+
+        Quaternion networkRotation = targetTempTransform.Rotation;
+        transform.rotation = networkRotation;
+    }
+
+    public override void OnWritePacket(PhotonStream stream, PhotonMessageInfo info)
+    {
+        base.OnWritePacket(stream, info);
+        stream.SendNext(GetEntity().GetVelocity());
+        stream.SendNext(GetEntity().GetAngularVelocity());
+    }
+
+    public override void OnReadPacket(PhotonStream stream, PhotonMessageInfo info)
+    {
+        base.OnReadPacket(stream, info);
+        m_Fraction = 0;
+    }
+
+    public override NetworkTransform ReceiveNetworkState(PhotonStream stream, PhotonMessageInfo info, NetworkTransform newState)
+    {
+        newState = base.ReceiveNetworkState(stream, info, newState);
+
+        Vector3 vel = (Vector3)stream.ReceiveNext();
+        Vector3 angVel = (Vector3)stream.ReceiveNext();
+
+        newState.Velocity = vel;
+        newState.AngularVelocity = angVel;
+        //GetEntity().SetVelocity(vel);
+
+        return newState;
     }
 }

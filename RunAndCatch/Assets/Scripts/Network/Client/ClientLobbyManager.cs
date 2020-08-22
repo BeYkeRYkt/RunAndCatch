@@ -13,6 +13,10 @@ public class ClientLobbyManager : MonoBehaviourPunCallbacks
     private bool isConnected = false;
     public List<string> mapPool = new List<string>();
 
+    // timer
+    private CooldownTimer cooldownTimer;
+    public float cooldownTimeInSeconds = 5; // in secs
+
     public static ClientLobbyManager Instance { get; private set; }
 
     void Awake()
@@ -28,23 +32,46 @@ public class ClientLobbyManager : MonoBehaviourPunCallbacks
     // Start is called before the first frame update
     void Start()
     {
-        ConnectToPhotonServer();
+        cooldownTimer = new CooldownTimer(cooldownTimeInSeconds);
+        cooldownTimer.TimerCompleteEvent += OnTimerComplete;
+
+        if (!PhotonNetwork.IsConnected)
+        {
+            ConnectToPhotonServer();
+        } else
+        {
+            OnConnectedToMaster();
+        }
     }
 
     public void ConnectToPhotonServer()
     {
         isConnecting = true;
 
-        PhotonNetwork.NickName = "default" + Random.Range(0, 100);
-        Log("My name is " + PhotonNetwork.NickName);
-
         PhotonNetwork.GameVersion = "1";
         PhotonNetwork.AutomaticallySyncScene = true;
         PhotonNetwork.ConnectUsingSettings();
+
+        // setting photon
+        //PhotonNetwork.SerializationRate = 5;
+
+        // Open connecting screen
+        UIManager uiManager = UIManager.Instance;
+        uiManager.OpenGUI(MobileConnectToServerScreen.ID);
+        MobileConnectToServerScreen connectScreen = (MobileConnectToServerScreen) uiManager.GetCurrentScreen();
+        connectScreen.showConnectingState();
     }
 
     public override void OnConnectedToMaster()
     {
+        if (!isConnected)
+        {
+            // open main menu screen
+            UIManager uiManager = UIManager.Instance;
+            uiManager.CloseGUI();
+            uiManager.OpenGUI(MobileMainMenuScreen.ID);
+        }
+
         Log("Connected to master!");
         isConnecting = false;
         isConnected = true;
@@ -56,6 +83,42 @@ public class ClientLobbyManager : MonoBehaviourPunCallbacks
         Log("Disconnected! Cause: " + cause.ToString());
         isConnecting = false;
         isConnected = false;
+
+        // open connecting screen again
+        UIManager uiManager = UIManager.Instance;
+        if (uiManager.GetCurrentScreen().mId != MobileConnectToServerScreen.ID)
+        {
+            uiManager.CloseGUI();
+            uiManager.OpenGUI(MobileConnectToServerScreen.ID);
+        }
+        MobileConnectToServerScreen connectScreen = (MobileConnectToServerScreen)uiManager.GetCurrentScreen();
+        connectScreen.SetTime((int)cooldownTimeInSeconds);
+        connectScreen.showFailedState();
+
+        // start timer
+        cooldownTimer.Start();
+    }
+
+    public void Update()
+    {
+        // update timer
+        cooldownTimer.Update(Time.deltaTime);
+
+        if (!isConnected || !isConnecting)
+        {
+            if (cooldownTimer.IsActive)
+            {
+                UIManager uiManager = UIManager.Instance;
+                MobileConnectToServerScreen connectScreen = (MobileConnectToServerScreen) uiManager.GetCurrentScreen();
+                connectScreen.SetTime((int)cooldownTimer.TimeRemaining + 1);
+            }
+        }
+    }
+
+    public void OnTimerComplete()
+    {
+        // try reconnect
+        ConnectToPhotonServer();
     }
 
     public bool IsConnecting()
@@ -92,24 +155,39 @@ public class ClientLobbyManager : MonoBehaviourPunCallbacks
         }
     }
 
-    public void JoinRoom()
+    public bool JoinRoom()
     {
         if (isConnected)
         {
+            if(!PhotonNetwork.IsConnectedAndReady)
+            {
+                return false;
+            }
+
             Hashtable table = new Hashtable();
             table.Add("skin", "0");
             PhotonNetwork.LocalPlayer.SetCustomProperties(table);
 
             Hashtable customRoomProperties = new Hashtable() { { "IsGameRunning", false } };
-            PhotonNetwork.JoinRandomRoom(customRoomProperties, 5);
+            return PhotonNetwork.JoinRandomRoom(customRoomProperties, 5);
         }
+
+        return false;
     }
 
     public override void OnJoinedRoom()
     {
+        // update ui to room state
+        UIManager uiManager = UIManager.Instance;
+        MobilePlayMenuScreen screen = (MobilePlayMenuScreen) uiManager.GetCurrentScreen();
+        screen.ShowInRoomState();
+
         Log("Joined the room");
         string level = (string) PhotonNetwork.CurrentRoom.CustomProperties["Level"];
-        PhotonNetwork.LoadLevel(level);
+        if (PhotonNetwork.LocalPlayer.IsMasterClient)
+        {
+            //PhotonNetwork.LoadLevel(level);
+        }
     }
 
     public override void OnJoinRandomFailed(short returnCode, string message)
@@ -118,16 +196,27 @@ public class ClientLobbyManager : MonoBehaviourPunCallbacks
         CreateRoom();
     }
 
+    public bool LeaveRoom()
+    {
+        if (PhotonNetwork.CurrentRoom != null)
+        {
+            return PhotonNetwork.LeaveRoom();
+        }
+        return false;
+    }
+
+    public override void OnLeftRoom()
+    {
+        base.OnLeftRoom();
+
+        // update ui to idle state
+        UIManager uiManager = UIManager.Instance;
+        MobilePlayMenuScreen screen = (MobilePlayMenuScreen)uiManager.GetCurrentScreen();
+        screen.ShowIdleState();
+    }
+
     private void Log(string msg)
     {
         Debug.Log(msg);
-
-        if(LogText == null) {
-            MobileMainMenuScreen mainMenu = (MobileMainMenuScreen)UIManager.Instance.GetScreenById(MobileMainMenuScreen.ID);
-            LogText = mainMenu.LogText;
-        }
-
-        LogText.text += "\n";
-        LogText.text += msg;
     }
 }

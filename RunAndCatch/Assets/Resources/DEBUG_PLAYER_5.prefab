@@ -58,6 +58,8 @@ MonoBehaviour:
   lookSpeed: 2
   lookXLimit: 60
   cameraObject: {fileID: 0}
+  variableJoystick: {fileID: 0}
+  animator: {fileID: 0}
 --- !u!54 &3054783469337230199
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -124,20 +126,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be453733dbbd5464694d13b709ee532e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncPosition: 1
-  syncRotation: 1
-  _realPosition: {x: 0, y: 0, z: 0}
-  _positionAtLastPacket: {x: 0, y: 0, z: 0}
-  _realRotation: {x: 0, y: 0, z: 0, w: 0}
-  currentTime: 0
-  currentPacketTime: 0
-  lastPacketTime: 0
-  timeToReachGoal: 0
+  mode: 1
   _entity: {fileID: 7452304602785331455}
-  syncVelocity: 1
-  syncAngularVelocity: 1
-  _realVelocity: {x: 0, y: 0, z: 0}
-  _realAngularVelocity: {x: 0, y: 0, z: 0}
 --- !u!136 &4216646981178291500
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -383,11 +373,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: debug_5_vox
-      objectReference: {fileID: 0}
-    - target: {fileID: 2925054811380727953, guid: 80c26a33aeddf3841bc6e695c997b399,
-        type: 3}
-      propertyPath: m_Layer
-      value: 9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 80c26a33aeddf3841bc6e695c997b399, type: 3}

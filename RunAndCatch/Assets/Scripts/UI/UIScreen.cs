@@ -1,4 +1,4 @@
-﻿using System;
+﻿
 using UnityEngine;
 
 public abstract class UIScreen : MonoBehaviour
@@ -9,10 +9,12 @@ public abstract class UIScreen : MonoBehaviour
     {
         gameObject.SetActive(true);
         MoveScreenForward();
+        OnShowScreen();
     }
 
     public virtual void Hide()
     {
+        OnHideScreen();
         gameObject.SetActive(false);
     }
 
@@ -23,4 +25,8 @@ public abstract class UIScreen : MonoBehaviour
     }
 
     public abstract void Initialize();
+
+    public virtual void OnShowScreen() { }
+
+    public virtual void OnHideScreen() { }
 }

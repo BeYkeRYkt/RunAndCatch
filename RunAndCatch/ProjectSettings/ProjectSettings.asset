@@ -16,7 +16,7 @@ PlayerSettings:
   productName: RunAndCatch
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
-  m_SplashScreenBackgroundColor: {r: 0.5377359, g: 0.7169812, b: 0.6246217, a: 1}
+  m_SplashScreenBackgroundColor: {r: 0.31764707, g: 0.3764706, b: 0.27450982, a: 1}
   m_ShowUnitySplashScreen: 1
   m_ShowUnitySplashLogo: 1
   m_SplashScreenOverlayOpacity: 1

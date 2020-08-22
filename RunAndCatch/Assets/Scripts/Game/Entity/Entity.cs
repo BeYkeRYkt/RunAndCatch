@@ -62,14 +62,14 @@ public class Entity : MonoBehaviour
         }
         OnEntityDeath();
         Debug.Log(gameObject.name + ": HOLY SHIT! I'M DEAD! Not big surprise.");
-        Destroy(gameObject);
+        //Destroy(gameObject);
     }
 
     public void KillEntityRPC()
     {
         OnEntityDeath();
         Debug.Log(gameObject.name + ": HOLY SHIT! I'M DEAD! Not big surprise.");
-        Destroy(gameObject);
+        //Destroy(gameObject);
     }
 
     public virtual void SetPosition(Vector3 position)

@@ -27,17 +27,26 @@ public class CharacterMovement : MonoBehaviour
     private Vector2 rotation = Vector2.zero;
 
     private EntityPlayer entityPlayer;
-    private ClientGameManager gameManager;
+    private GameManager gameManager;
 
     // Photon
     private PhotonView photonView;
 
+    // Animator
+    public Animator animator;
+
     private void Start()
     {
-        gameManager = ClientGameManager.Instance;
+        gameManager = GameManager.Instance;
         entityPlayer = GetComponent<EntityPlayer>();
         photonView = GetComponent<PhotonView>();
         rotation.y = transform.eulerAngles.y;
+
+        if(!photonView.IsMine)
+        {
+            enabled = false;
+            return;
+        }
 
         // set joystick
         UIManager manager = UIManager.Instance;
@@ -82,10 +91,11 @@ public class CharacterMovement : MonoBehaviour
         //Multiply it by speed.
         if (moveX != 0 || moveZ != 0)
         {
+            float directionMultiply = Mathf.Abs(moveX) > Mathf.Abs(moveZ) ? Mathf.Abs(moveX) : Mathf.Abs(moveZ);
             moveDirection.y = 0;
             if (entityPlayer.IsGrounded())
             {
-                currentSpeed = groundSpeed;
+                currentSpeed = groundSpeed * directionMultiply;
             }
             else
             {
@@ -108,12 +118,25 @@ public class CharacterMovement : MonoBehaviour
             if (entityPlayer.checkCollide(calcVector))
             {
                 calcVector = Vector3.zero;
-                Debug.Log("FUU");
             }
         }
 
         // Making the character move
-        entityPlayer.MoveEntityXZ(calcVector);
+        if (moveX != 0 || moveZ != 0)
+        {
+            // update movement entity
+            entityPlayer.MoveEntityXZ(calcVector);
+
+            // update animation
+            if (animator != null)
+            {
+                //animator.SetTrigger("Walk");
+            }
+        }
+        if (animator != null)
+        {
+            animator.SetFloat("Speed", Mathf.Abs(moveX) > Mathf.Abs(moveZ) ? Mathf.Abs(moveX) : Mathf.Abs(moveZ));
+        }
 
         // mouse handle
         if (mouse_enable && !gameManager.isPaused)
